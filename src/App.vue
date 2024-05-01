@@ -1,15 +1,38 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+  <button v-on:click="toggle='character-viewer'; getCharacters()">View all characters</button>
+  <button v-on:click="toggle='character-creator'">Create a character</button>
+    <CharacterViewer v-show="toggle==='character-viewer'" :characters="characters" />
+    <CharacterCreator v-show="toggle==='character-creator'"/>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import CharacterViewer from './components/CharacterViewer.vue'
+import CharacterCreator from './components/CharacterCreator.vue'
+import axios from 'axios'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    CharacterViewer,
+    CharacterCreator
+  },
+  data: function() {
+    return {
+      toggle: "character-viewer",
+      characters: null
+    }
+  },
+  methods: {
+    getCharacters: function() {
+        axios
+            .get("http://localhost:3000/characters")
+            .then(response => { this.characters = response.data })
+    },
+    mounted: function() {
+      this.getCharacters();
+    }
   }
 }
 </script>
